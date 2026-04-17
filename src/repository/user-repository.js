@@ -1,59 +1,60 @@
-const {User,Role} = require('../models/index');
+const { User, Role } = require('../models/index');
+const ValidationError = require('../utils/validation-error');
 
 class UserRepository {
-    async create(data){
+
+    async create(data) {
         try {
             const user = await User.create(data);
             return user;
-            
         } catch (error) {
-            console.log("Something went wrong in repository layer",error)
-                throw {error}
-        }
-
-    }
-
-        async destroy(userId){
-        try {
-            const user = await User.destroy({ where: 
-                { 
-                    id: userId
-                 } 
-                });
-            return user;
-            
-        } catch (error) {
-            console.log("Something went wrong in repository layer",error)
-                throw {error}
-        }
-
-    }
-
-    async getByID(userId){
-        try {
-            const user = await User.findByPk(userId,{
-                attributres: ['email','id']
-            });
-            return user;
-        } catch (error) {
-            console.log("Something went wrong in repository layer",error)
-                throw {error}
+            if(error.name == 'SequelizeValidationError') {
+                throw new ValidationError(error);
+            }
+            console.log("Something went wrong on repository layer");
+            throw error;
         }
     }
-    async getByEmail(userEmail){
+
+    async destroy(userId) {
         try {
-            const user = await User.findOne({
+            await User.destroy({
                 where: {
-                    email: userEmail
+                    id: userId
                 }
             });
-            return user;
+            return true;
         } catch (error) {
-            console.log("Something went wrong in repository layer",error)
-                throw {error}
+            console.log("Something went wrong on repository layer");
+            throw error;
         }
     }
-    async isAdmin(userId){
+
+    async getById(userId) {
+        try {
+            const user = await User.findByPk(userId, {
+                attributes: ['email', 'id']
+            });
+            return user;
+        } catch (error) {
+            console.log("Something went wrong on repository layer");
+            throw error;
+        }
+    }
+
+    async getByEmail(userEmail) {
+        try {
+            const user = await User.findOne({where: {
+                email: userEmail
+            }});
+            return user;
+        } catch (error) {
+            console.log("Something went wrong on repository layer");
+            throw error;
+        }
+    }
+
+    async isAdmin(userId) {
         try {
             const user = await User.findByPk(userId);
             const adminRole = await Role.findOne({
@@ -62,14 +63,11 @@ class UserRepository {
                 }
             });
             return user.hasRole(adminRole);
-            
         } catch (error) {
-            console.log("Something went wrong in repository layer",error)
-                throw {error}
+            console.log("Something went wrong on repository layer");
+            throw error;
         }
-
     }
-        
 }
 
 module.exports = UserRepository;
