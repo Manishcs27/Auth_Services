@@ -1,3 +1,4 @@
+const { sign } = require('jsonwebtoken');
 const UserService= require('../services/user-service')
 
  const userService = new UserService();
@@ -23,8 +24,28 @@ const create = async (req,res) => {
              error: error
              });
     }
-};
+}
+
+const signIn = async (req,res) => {
+    try {
+        const response = await userService.signIn(req.body.email, req.body.password);
+        res.status(200).json({
+            message: "Signed in successfully",
+            data: response,
+            success: true,
+            error: {}
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Something went wrong while signing in",
+            data:{},
+            success: false,
+             error: error
+             });
+    }
+}
+
 
 module.exports = {
-    create
+    create,signIn
 }
