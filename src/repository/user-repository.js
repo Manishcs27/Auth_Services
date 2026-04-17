@@ -47,6 +47,9 @@ class UserRepository {
             const user = await User.findOne({where: {
                 email: userEmail
             }});
+            if(!user) {
+                throw {error: 'No user found with the given email'};
+            }
             return user;
         } catch (error) {
             console.log("Something went wrong on repository layer");
