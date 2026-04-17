@@ -10,4 +10,14 @@ router.post('/signup', userController.create);
 
 router.post('/signin',AuthRequestValidators.validateUserAuth , userController.signIn);
 
+router.get('/isAuthenticated',userController.isAuthenticated);
+
+router.get('/dummy', (req,res) => {
+    res.status(200).json({
+        message:"OK"
+    });
+});
+
+
 module.exports = router;
+

@@ -48,6 +48,24 @@ class UserService {
         }
     }
 
+    async isAuthenticated(token){
+        try {
+            const response = this.verifyToken(token);
+            if (!response) {
+                throw new Error('Invalid token');
+            }
+            const user = this.userRepository.getByID(response.id);
+            if(!user){
+                throw new Error('No user found for the corresponding token');
+            }
+            return user.id;
+        } catch (error) {
+            console.log("Something went wrong in service layer", error);
+            throw { error };
+            
+        }
+    }
+
     createToken(user){
         try {
             const result = jwt.sign(
