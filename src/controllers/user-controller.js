@@ -64,10 +64,26 @@ const signIn = async (req,res) => {
                  });
         }
     }
-
-
-
+    const isAdmin = async (req,res) => {
+        try {
+            const response = await userService.isAdmin(req.body.id);
+            res.status(200).json({
+                message: "Checked admin status successfully",
+                data: response,
+                success: true,
+                error: {}
+            });
+        } catch (error) {
+            console.log("Something went wrong in controller layer", error);
+            res.status(500).json({
+                message: "Something went wrong while checking admin status",
+                data:{},
+                success: false,
+                 error: error
+                 });
+        }
+    }
 
 module.exports = {
-    create,signIn,isAuthenticated
+    create,signIn,isAuthenticated,isAdmin
 }

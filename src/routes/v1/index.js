@@ -18,6 +18,7 @@ router.get('/dummy', (req,res) => {
     });
 });
 
+router.get('/isAdmin',AuthRequestValidators.validateIsAdminRequest , userController.isAdmin);
 
 module.exports = router;
 
