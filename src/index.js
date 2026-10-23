@@ -22,7 +22,7 @@ const startServer = () => {
     app.use('/api', apiRoutes);
 
     
-    app.listen(PORT, async () => {
+    app.listen(PORT, '127.0.0.1', async () => {
         console.log(`Auth Service is running on port ${PORT}`);
         if (process.env.DB_SYNC) {
             db.sequelize.sync({alter: true});
